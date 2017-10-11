@@ -126,7 +126,7 @@ The output of this components will be as follows:
              	_paramsArr: {
   	           	   type: Array,
   	           	   notify: true,
-  	           	   value: ["offset", "limit", "user"]
+  	           	   value: ["offset", "limit", "user", "filter"]
                 },
                 /*Object for storing success/error response*/
 				connections: {
@@ -153,6 +153,12 @@ The output of this components will be as follows:
      	        	notify :  true,
                     observer: '_userModified'
      	        },
+				/*Parameters for filter*/
+				filter: {
+					type: String,
+					notify: true,
+					value: ''
+				},
 				/*The api path key*/
      	        _pathKey: {
                 	type: String,
