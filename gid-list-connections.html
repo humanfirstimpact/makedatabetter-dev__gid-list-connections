@@ -1,0 +1,245 @@
+<!--
+  Wrapper component for connections
+-->
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../gid-api/gid-api.html">
+<!--
+`gid-list-connections`
+
+
+A data component to get list of connections and its metadata for given user id
+
+    <gid-list-connections user='1' connections='{{connections}}'></gid-list-connections>
+    
+The property 'user' is mandatory.
+
+The property 'connections' returns the response against the rest call.
+
+- `limit`  & `offset` - use limit and offset parameters to paginate records
+
+If 'apiUrl' is not provided, then the component would fetch sample data from mock json.
+
+API endpoint:
+
+    GET /databases
+
+Input:
+
+- User (Query param)
+
+Output:
+
+- List of connections with key metadata (items being displayed on listing page)
+
+
+The output of this components will be as follows:
+
+{
+"databases": [
+        {
+            "id": "-3250952192666617532",
+            "label": "CONSUMER_RELATIONSHIP",
+            "connectionName": "CONSUMER_RELATIONSHIP",
+            "host": "192.168.33.208",
+            "port": 1530,
+            "dbType": "Derby",
+            "application": {
+                "id": "102540266",
+                "label": "Customer Mangement System"
+            },
+            "lob": {
+                "id": "100850160",
+                "label": "GLOBAL"
+            }
+        }
+    ]
+}
+
+@demo demo/index.html
+-->
+<dom-module id="gid-list-connections">
+  <template>
+ 		 <!-- fetch entity _path  -->
+        	<gid-api entity = '{{_apiEntity}}' path-key= '{{_pathKey}}' path='{{_path}}'></gid-api>
+         <!--  fetch entity _path -->
+         
+         <!-- connections -->
+			<gid-api auto=false
+				method="GET" api-url={{_connectionsUrl}} response='{{connectionsResponse}}' error='{{connectionsError}}'
+				api-params={{_connectionsParams}} api-token = {{_connectionToken}}
+				api-timeout={{_connectionsTimeout}} ></gid-api>
+	    <!-- connections -->
+
+  </template>
+  <script>
+    (function() {
+     'use strict';
+      Polymer({
+        is:'gid-list-connections',
+        properties:{
+        	    /*Authorization token for accessing rest api*/
+	        	apiToken: {
+	            	type: String,
+	                notify: true,
+	                value : ''
+	            },
+	            /*Base url*/
+	        	apiUrl:{
+	            	type: String,
+	    	        notify: true,
+	    	        value: ''
+	    	 	},
+	    	   /*connections url sent to gid-api*/
+				_connectionsUrl:{
+                	type: String,
+        	        notify: true
+        	 	},
+        	   /*connections timeout sent to gid-api*/
+				_connectionsTimeout : {
+            		type: Number,
+        	        notify: true,
+        	        value : 0
+        	    },
+        	    /*connections response sent to gid-api. This is a private property*/
+				connectionsResponse : {
+	     	  		type : Object,
+	     	  		notify : true,
+	     	  		observer : '_connectionResponseReceived'
+        	  	},
+        	  	/*connections error sent to gid-api. This is a private property*/
+				connectionsError : {
+        	  		type : Object,
+	     	  		notify : true,
+	     	  		observer : '_connectionErrorReceived'
+        	  	},
+        	  	/*connections params sent to gid-api*/
+				_connectionsParams : {
+	     	   		type: String,
+	     	   		notify : true
+     	   	    },
+     	   	   /*connections token sent to gid-api*/
+				_connectionToken: {
+	             	type: String,
+	                notify: true
+	            },
+	            /*Array listing the parameters*/
+             	_paramsArr: {
+  	           	   type: Array,
+  	           	   notify: true,
+  	           	   value: ["offset", "limit", "user"]
+                },
+                /*Object for storing success/error response*/
+				connections: {
+     	          type: Array,
+     	          value: [],
+     	          notify: true
+     	        },
+     	        /*Limit parameter to paginate records*/
+     	      	limit: {
+               	   type: String,
+                   notify: true,
+                   value: ''
+                },
+                /*Offset parameter to paginate records*/
+                offset: {
+                	type: String,
+                	notify: true,
+                	value: ''
+                },
+                /*User Id*/
+     	        user: {
+     	        	type: String,
+     	        	value : '',
+     	        	notify :  true,
+                    observer: '_userModified'
+     	        },
+				/*The api path key*/
+     	        _pathKey: {
+                	type: String,
+                    notify: true,
+                    value: ''
+                },
+                /*The api path*/
+                _path: {
+                	type: String,
+                    notify: true,
+                    value: '',
+                    observer: '_pathReceived'
+                },
+                /*Api entity sent to gid-api*/
+                _apiEntity: {
+                	type: String,
+                    notify: true
+                }
+                
+        },
+        /* Observer of user id */
+        _userModified:  function(){
+        	if (this.user) {
+        	 	if (!this.apiUrl) {
+	      			this._connectionsUrl = this.importPath + 'assets/json/list-connections.json';
+	                this._connectionsTimeout =  this._connectionsTimeout - 1;
+      			}
+        		else {
+        			this._pathKey =  'noFilter';
+         			this._apiEntity = 'databases';
+         		}
+         	}
+        },
+        /* Observer for api path */
+        _pathReceived: function(){
+        	if(this._path){
+        		var res = this._path.split(/{([^}]+)}/);
+        		for (var i in res) {
+        			if(!res[i].startsWith("/")){
+        					if(this[res[i]]){
+        						res[i] = this[res[i]];
+        					}
+        			}
+        		}
+       			this._connectionsUrl = this.apiUrl + res.join("");
+       			var paramsObj = {};
+       			for (var i in this._paramsArr){
+                	if(this[this._paramsArr[i]]){
+                		paramsObj[this._paramsArr[i]]= this[this._paramsArr[i]];
+                		}
+                	
+                }
+       			this._connectionsParams = JSON.stringify(paramsObj);
+       			if(this.apiToken){
+       				this._connectionToken =  this.apiToken;
+       			}
+       			this._connectionsTimeout =  this._connectionsTimeout - 1;
+        		
+        	}
+        },
+        /* Success response handler */
+		  _connectionResponseReceived : function(newvalue, oldvalue){
+            this._reset();
+            if(newvalue != null){
+  	             this.async(function() {
+  	         		this.connections =  this.connections.concat(newvalue.domains);
+  	   		 	          }, 500);
+            }
+           	
+           },
+         /* Error response handler */
+		  _connectionErrorReceived : function(newvalue, oldvalue){
+            this._reset();
+            if(newvalue != null){
+  	             this.async(function() {
+  	         		this.connections =  this.connections.concat(newvalue.response);
+  	   		 	          }, 500);
+            }
+           	
+           },
+           /* Reset method */
+           _reset : function(){
+        	   this.connections = [];
+        	   this._apiEntity = '';
+   			   this._path = '';
+           }
+      });
+    })();
+  </script>
+</dom-module>

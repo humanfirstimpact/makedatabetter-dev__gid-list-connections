@@ -1,0 +1,96 @@
+<link rel="import" href="../gid-list-connections.html">
+
+<dom-module id="list-connections">
+  <template>
+  		 <style>
+		  	table, th, td {
+		    border: 1px solid grey;
+		    border-collapse: collapse;
+			}
+			td {
+			    text-align: center;
+			}
+  		</style>
+        <h1>Connections</h1>
+
+        <gid-list-connections api-url='https://protect-lab.globalids.com/mdb/' user='1'
+        limit = '1000' offset = '0' api-token = 'VVNfMjItMzg0MjY1N18xMTA1MTY0MzI5NzY0MTUwNzI5MDIyOTE1MjI3MDFY'
+        connections='{{connections}}'></gid-list-connections>
+            <template is="dom-if" if="[[connectionsListReceived]]">
+	                <table style="width:100%">
+					  <tr>
+					    <th>ID</th>
+					    <th>Label</th>
+					    <th>Connection Name</th>
+					    <th>Host</th>
+					    <th>Port</th>
+					    <th>DB Type</th>
+					    <th>Application ID</th>
+					    <th>Application Label</th>
+					    <th>LOB ID</th>
+						<th>LOB Label</th>
+					  </tr>
+					  <template is="dom-repeat" items="[[connections]]">
+					  <tr>
+					    <td>{{item.id}}</td>
+					    <td>{{item.label}}</td>
+					    <td>{{item.connectionName}}</td>
+						<td>{{item.host}}</td>
+					    <td>{{item.port}}</td>
+					    <td>{{item.dbType}}</td>
+					    <!--td>
+					     <template is="dom-repeat" items="[[item.impactArea]]">
+					     	{{item.label}} &nbsp;
+					     </template>
+					    </td> 
+					    <td>{{item.classificationAccuracyPercentage}}</td>	    
+					    <td>
+					     <template is="dom-repeat" items="[[item.applications]]">
+					     	{{item.label}} &nbsp;
+					     </template>
+					    </td-->
+						<td>{{item.application.id}}</td>
+						<td>{{item.application.label}}</td>
+						<td>{{item.lob.id}}</td>
+						<td>{{item.lob.label}}</td>
+					  </tr>
+					 </template>
+					</table>
+            </template>
+            <template is="dom-if" if="![[connectionsListReceived]]">
+	            <div class="horizontal-section">
+	                <p>{{connections.0.userMessage}}</p>
+	            </div>
+        	</template>
+  </template>
+  <script>
+    (function() {
+     'use strict';
+      Polymer({
+        is:'list-connections',
+        properties:{
+			connections: {
+     	          type: Array,
+     	          value: [],
+     	          notify: true,
+     	          observer: 'connectionsObserver'
+     	        },
+			connectionsListReceived: {
+     	        	type: Boolean,
+     	        	value: false
+     	        }
+        },
+		  connectionsObserver: function () {
+        	 if(this.connections.length > 0){
+				if(this.connections[0]['errorCode']){
+					this.connectionsListReceived = false;
+				}
+				else{
+					this.connectionsListReceived =  true;
+				}
+        	 }
+         }
+      });
+    })();
+  </script>
+</dom-module>

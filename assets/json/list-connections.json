@@ -1,0 +1,20 @@
+{
+  "databases": [
+    {
+      "id": "-3250952192666617532",
+      "label": "CONSUMER_RELATIONSHIP",
+      "connectionName": "CONSUMER_RELATIONSHIP",
+      "host": "192.168.33.208",
+      "port": 1530,
+      "dbType": "Derby",
+      "application": {
+        "id": "102540266",
+        "label": "Customer Mangement System"
+      },
+      "lob": {
+        "id": "100850160",
+        "label": "GLOBAL"
+      }
+    }
+  ]
+}
