@@ -188,7 +188,7 @@ The output of this components will be as follows:
       			}
         		else {
         			this._pathKey =  'default';
-         			this._apiEntity = 'list-connections';
+         			this._apiEntity = 'LIST-CONNECTIONS';
          		}
          	}
         },
@@ -224,7 +224,7 @@ The output of this components will be as follows:
             this._reset();
             if(newvalue != null){
   	             this.async(function() {
-  	         		this.connections =  this.connections.concat(newvalue.domains);
+  	         		this.connections =  this.connections.concat(newvalue);
   	   		 	          }, 500);
             }
            	
@@ -234,7 +234,7 @@ The output of this components will be as follows:
             this._reset();
             if(newvalue != null){
   	             this.async(function() {
-  	         		this.connections =  this.connections.concat(newvalue.response);
+  	         		this.connections =  this.connections.concat(newvalue);
   	   		 	          }, 500);
             }
            	

@@ -14,7 +14,7 @@
         <h1>Connections</h1>
 
         <gid-list-connections api-url='https://virtserver.swaggerhub.com/srimanta.maji/DISCOVERY/1' user='1'
-        limit = '1000' offset = '0' api-token = ''
+        limit = '10' offset = '0' api-token = ''
         connections='{{connections}}'></gid-list-connections>
             <template is="dom-if" if="[[connectionsListReceived]]">
 	                <table style="width:100%">
@@ -32,27 +32,18 @@
 					  </tr>
 					  <template is="dom-repeat" items="[[connections]]">
 					  <tr>
+						<template is="dom-repeat" items="[[item.databases]]">
 					    <td>{{item.id}}</td>
 					    <td>{{item.label}}</td>
 					    <td>{{item.connectionName}}</td>
 						<td>{{item.host}}</td>
 					    <td>{{item.port}}</td>
 					    <td>{{item.dbType}}</td>
-					    <!--td>
-					     <template is="dom-repeat" items="[[item.impactArea]]">
-					     	{{item.label}} &nbsp;
-					     </template>
-					    </td> 
-					    <td>{{item.classificationAccuracyPercentage}}</td>	    
-					    <td>
-					     <template is="dom-repeat" items="[[item.applications]]">
-					     	{{item.label}} &nbsp;
-					     </template>
-					    </td-->
 						<td>{{item.application.id}}</td>
 						<td>{{item.application.label}}</td>
 						<td>{{item.lob.id}}</td>
 						<td>{{item.lob.label}}</td>
+						</template>
 					  </tr>
 					 </template>
 					</table>
