@@ -20,11 +20,11 @@
     "lodash": "4.17.4"
   },
   "homepage": "https://github.com/makedatabetter-dev/gid-api",
-  "_release": "0650875406",
+  "_release": "a2b96ad733",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "06508754062d46ae05f834c29632a872b718e018"
+    "commit": "a2b96ad73384f526ff1d67e5c92577600500a2aa"
   },
   "_source": "https://github.com/makedatabetter-dev/gid-api.git",
   "_target": "*",

@@ -21,11 +21,11 @@
     "lodash": "4.17.4"
   },
   "homepage": "https://github.com/makedatabetter-dev/gid-list-connections",
-  "_release": "09367cae1a",
+  "_release": "84c0911a3f",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "09367cae1abc38f045877b13002fbbdf12efa385"
+    "commit": "84c0911a3f705ca1498615dc77320068620e9adb"
   },
   "_source": "https://github.com/makedatabetter-dev/gid-list-connections.git",
   "_target": "*",

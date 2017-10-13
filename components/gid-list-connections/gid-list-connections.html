@@ -19,6 +19,8 @@ The property 'connections' returns the response against the rest call.
 
 If 'apiUrl' is not provided, then the component would fetch sample data from mock json.
 
+The field 'listedConnections' needs to set to 'true' in order to get the list of connections.
+
 API endpoint:
 
     GET /databases
@@ -150,8 +152,7 @@ The output of this components will be as follows:
      	        user: {
      	        	type: String,
      	        	value : '',
-     	        	notify :  true,
-                    observer: '_userModified'
+     	        	notify :  true
      	        },
 				/*Parameters for filter*/
 				filter: {
@@ -176,19 +177,26 @@ The output of this components will be as follows:
                 _apiEntity: {
                 	type: String,
                     notify: true
-                }
-                
+                },
+			    /*Flag set to 'true' to listedConnections*/
+				listedConnections: {
+					type: Boolean,
+                    notify: true,
+					value: false,
+					observer: '_listedConnectionsObserver'
+				}
+
         },
         /* Observer of user id */
-        _userModified:  function(){
-        	if (this.user) {
+        _listedConnectionsObserver:  function(){
+        	if (this.listedConnections) {
         	 	if (!this.apiUrl) {
 	      			this._connectionsUrl = this.importPath + 'assets/json/list-connections.json';
 	                this._connectionsTimeout =  this._connectionsTimeout - 1;
       			}
         		else {
         			this._pathKey =  'default';
-         			this._apiEntity = 'LIST-CONNECTIONS';
+         			this._apiEntity = 'list-connections';
          		}
          	}
         },
@@ -209,14 +217,14 @@ The output of this components will be as follows:
                 	if(this[this._paramsArr[i]]){
                 		paramsObj[this._paramsArr[i]]= this[this._paramsArr[i]];
                 		}
-                	
+
                 }
        			this._connectionsParams = JSON.stringify(paramsObj);
        			if(this.apiToken){
        				this._connectionToken =  this.apiToken;
        			}
        			this._connectionsTimeout =  this._connectionsTimeout - 1;
-        		
+
         	}
         },
         /* Success response handler */
@@ -227,7 +235,7 @@ The output of this components will be as follows:
   	         		this.connections =  this.connections.concat(newvalue);
   	   		 	          }, 500);
             }
-           	
+
            },
          /* Error response handler */
 		  _connectionErrorReceived : function(newvalue, oldvalue){
@@ -237,13 +245,14 @@ The output of this components will be as follows:
   	         		this.connections =  this.connections.concat(newvalue);
   	   		 	          }, 500);
             }
-           	
+
            },
            /* Reset method */
            _reset : function(){
         	   this.connections = [];
         	   this._apiEntity = '';
    			   this._path = '';
+			   this.listedConnections = false;
            }
       });
     })();
